@@ -23,9 +23,9 @@ public:
   Switch *modulating_thermostat_switch = new OpenthermSwitch();
   Sensor *outside_temperature_sensor = new Sensor();
   Sensor *return_temperature_sensor = new Sensor();
-  Sensor *central_heating_actual_temperature_sensor = new Sensor();
   Sensor *boiler_pressure_sensor = new Sensor();
   Sensor *boiler_modulation_sensor = new Sensor();
+  Sensor *central_heating_actual_temperature_sensor = new Sensor();
   Sensor *central_heating_target_temperature_sensor = new Sensor();
   OpenthermClimate *domestic_hot_water_climate = new OpenthermClimate();
   OpenthermClimate *central_heating_climate = new OpenthermClimate();
@@ -75,7 +75,7 @@ public:
   }
 
   bool setDomesticHotWaterTemperature(float temperature) {
-	    unsigned int data = ot.temperatureToData(temperature);
+      unsigned int data = ot.temperatureToData(temperature);
       unsigned long request = ot.buildRequest(OpenThermRequestType::WRITE, OpenThermMessageID::TdhwSet, data);
       unsigned long response = ot.sendRequest(request);
       return ot.isValidResponse(response);
@@ -107,7 +107,11 @@ public:
     bool is_central_heating_active = ot.isCentralHeatingActive(response);
     bool is_hot_water_active = ot.isHotWaterActive(response);
     float return_temperature = getReturnTemperature();
+    float outside_temperature = ot.getOutsideTemperature();
+    float boiler_pressure = getPressure();
+    float boiler_modulation = getRelativeModulationLevel();
     float central_heating_actual_temperature = getBoilerTemperature();
+    float domestic_hot_water_temperature = getDomesticHotWaterTemperature();
 
 
     // Set temperature depending on room thermostat
@@ -118,12 +122,12 @@ public:
         central_heating_target_temperature = 10.0f;
       }
       else {
-        central_heating_target_temperature =  thermostat_modulation * (central_heating_climate->target_temperature_high - heatingWaterClimate->target_temperature_low) 
+        central_heating_target_temperature =  thermostat_modulation * (central_heating_climate->target_temperature_high - central_heating_climate->target_temperature_low) 
         + central_heating_climate->target_temperature_low;      
       }
       ESP_LOGD("opentherm_component", "setBoilerTemperature  at %f °C (from PID Output)", central_heating_target_temperature);
     }
-    else (thermostatSwitch->state) {
+    else {
       central_heating_target_temperature = central_heating_climate->target_temperature;
       ESP_LOGD("opentherm_component", "setBoilerTemperature  at %f °C (from heating water climate)", central_heating_target_temperature);
     }
@@ -131,12 +135,8 @@ public:
     ot.setBoilerTemperature(central_heating_target_temperature);
 
     // Set hot water temperature
-    ot.setDomesticHotWaterTemperature(domestic_hot_water_climate->target_temperature);
+    setDomesticHotWaterTemperature(domestic_hot_water_climate->target_temperature);
 
-    float central_heating_actual_temperature = ot.getBoilerTemperature();
-    float outside_temperature = ot.getOutsideTemperature();
-    float boiler_pressure = getPressure();
-    float boiler_modulation = getRelativeModulationLevel();
 
     // Publish sensor values
     boiler_flame_sensor->publish_state(is_flame_on); 
@@ -145,8 +145,8 @@ public:
     central_heating_actual_temperature_sensor->publish_state(central_heating_actual_temperature);
     boiler_pressure_sensor->publish_state(boiler_pressure);
     boiler_modulation_sensor->publish_state(boiler_modulation);
-    
-    heating_target_temperature_sensor->publish_state(heating_target_temperature);
+    central_heating_actual_temperature_sensor->publish_state(central_heating_actual_temperature);
+    central_heating_target_temperature_sensor->publish_state(central_heating_target_temperature);
 
     // Publish status of thermostat that controls hot water
     domestic_hot_water_climate->current_temperature = domestic_hot_water_temperature;
