@@ -123,7 +123,7 @@ public:
       }
       else {
         central_heating_target_temperature =  thermostat_modulation * (central_heating_climate->target_temperature_high - central_heating_climate->target_temperature_low) 
-        + central_heating_climate->target_temperature_low;      
+        + central_heating_climate->target_temperature_low;
       }
       ESP_LOGD("opentherm_component", "setBoilerTemperature  at %f °C (from PID Output)", central_heating_target_temperature);
     }
@@ -142,7 +142,6 @@ public:
     boiler_flame_sensor->publish_state(is_flame_on); 
     outside_temperature_sensor->publish_state(outside_temperature);
     return_temperature_sensor->publish_state(return_temperature);
-    central_heating_actual_temperature_sensor->publish_state(central_heating_actual_temperature);
     boiler_pressure_sensor->publish_state(boiler_pressure);
     boiler_modulation_sensor->publish_state(boiler_modulation);
     central_heating_actual_temperature_sensor->publish_state(central_heating_actual_temperature);
