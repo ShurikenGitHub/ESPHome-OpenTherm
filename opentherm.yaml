@@ -24,9 +24,6 @@ logger:
 api:
 ota:
 
-dallas:
-  - pin: 14
-
 custom_component:
   - lambda: |-
       auto opentherm = new OpenthermComponent();
@@ -47,17 +44,6 @@ output:
       id: thermostat_modulation
 
 sensor:
-  - platform: dallas
-    address:
-    name: "Room where the boiler is temperature"
-    
-  - platform: wifi_signal
-    name: "Opentherm Wi-Fi RSSI"
-    unit_of_measurement: "dBm"
-    update_interval: 30s
-    
-  - platform: uptime
-    name: Opentherm uptime
 
   - platform: custom
     lambda: |-    
@@ -105,7 +91,7 @@ sensor:
   - platform: homeassistant
     id: temperature_sensor
     entity_id: sensor.temperature_sensor
-    name: "Room temperature"
+    name: "Room Temperature"
     unit_of_measurement: °C
     device_class: temperature
 
@@ -131,7 +117,7 @@ binary_sensor:
       OpenthermComponent *openthermComp = (OpenthermComponent*) opentherm;
       return {openthermComp->boiler_flame_sensor};
     binary_sensors:
-    - name: "Boiler flame"
+    - name: "Boiler Flame"
 
 switch:
   - platform: custom
@@ -139,7 +125,7 @@ switch:
       OpenthermComponent *openthermComp = (OpenthermComponent*) opentherm;
       return {openthermComp->modulating_thermostat_switch};
     switches:
-      name: "Modulating thermostat enabled"
+      name: "Modulating Thermostat Enabled"
       icon: "mdi:vector-curve"
   - platform: template
     name: "Modulating Thermostat Autotune"
@@ -165,7 +151,7 @@ climate:
         name: "Central Heating"
   - platform: pid
     id: modulating_thermostat
-    name: "Modulating thermostat"
+    name: "Modulating Thermostat"
     visual:
       min_temperature: 16 °C
       max_temperature: 28 °C
