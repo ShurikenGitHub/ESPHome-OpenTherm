@@ -154,7 +154,7 @@ public:
     
     // Publish status of thermostat that controls heating
     central_heating_climate->current_temperature = central_heating_actual_temperature;
-    central_heating_climate->action = is_central_heating_active && isFlameOn ? ClimateAction::CLIMATE_ACTION_HEATING : ClimateAction::CLIMATE_ACTION_OFF;
+    central_heating_climate->action = is_central_heating_active && is_flame_on ? ClimateAction::CLIMATE_ACTION_HEATING : ClimateAction::CLIMATE_ACTION_OFF;
     central_heating_climate->publish_state();
   }
 
