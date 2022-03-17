@@ -107,10 +107,10 @@ public:
     bool is_central_heating_active = ot.isCentralHeatingActive(response);
     bool is_hot_water_active = ot.isHotWaterActive(response);
     float return_temperature = getReturnTemperature();
-    float outside_temperature = ot.getOutsideTemperature();
+    float outside_temperature = getOutsideTemperature();
     float boiler_pressure = getPressure();
     float boiler_modulation = getRelativeModulationLevel();
-    float central_heating_actual_temperature = getBoilerTemperature();
+    float central_heating_actual_temperature = ot.getBoilerTemperature();
     float domestic_hot_water_temperature = getDomesticHotWaterTemperature();
 
 
